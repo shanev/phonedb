@@ -84,6 +84,27 @@ describe('PhoneDB', () => {
     });
   });
 
+  describe('.getMutualContacts()', () => {
+    it('should find mutual contacts between two users', (done) => {
+      phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
+      phoneDB.addContacts('user2', ['+18475557777', '+14157775555', '+14157775556']);
+      phoneDB.getMutualContacts('user1', 'user2').then((contacts) => {
+        assert.equal(3, contacts.length);
+        done();
+      });
+    });
+
+    it('should find mutual registered contacts between two users', (done) => {
+      phoneDB.register('+18475557777');
+      phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
+      phoneDB.addContacts('user2', ['+18475557777', '+14157775555', '+14157775556']);
+      phoneDB.getMutualContacts('user1', 'user2', true).then((contacts) => {
+        assert.equal(1, contacts.length);
+        done();
+      });
+    });
+  });
+
   describe('.getContacts()', () => {
     it('should find 3 contacts on app', (done) => {
       phoneDB.register('+18475557777');
