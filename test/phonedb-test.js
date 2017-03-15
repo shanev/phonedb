@@ -21,7 +21,7 @@ describe('PhoneDB', () => {
     client.flushdb();
   });
 
-  describe('#register()', () => {
+  describe('.register()', () => {
     it('should register a valid phone number', (done) => {
       phoneDB.register('+18475557777').then(() => {
         client.scard('users:phone', (err, res) => {
@@ -50,7 +50,7 @@ describe('PhoneDB', () => {
     });
   });
 
-  describe('#addContacts()', () => {
+  describe('.addContacts()', () => {
     it('should add a list of valid contacts', (done) => {
       const contacts = ['+18475557777', '+14157775555'];
       phoneDB.addContacts('user1', contacts).then(() => {
@@ -84,12 +84,12 @@ describe('PhoneDB', () => {
     });
   });
 
-  describe('#findUsers()', () => {
+  describe('.getContacts()', () => {
     it('should find 2 contacts on app', (done) => {
       phoneDB.register('+18475557777');
       phoneDB.register('+14157775555');
       phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
-      phoneDB.findUsers('user1').then((users) => {
+      phoneDB.getContacts('user1').then((users) => {
         assert.equal(2, users.length);
         done();
       });

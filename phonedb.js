@@ -61,7 +61,11 @@ class PhoneDB {
     });
   }
 
-  mutualContacts(userId = null, otherUserId = null) {
+  /**
+   * mutualContacts() returns contacts `userId` and `otherUserId` have in common.
+   * If registered = true limits contacts to those already registered with PhoneDB.
+   */
+  getMutualContacts(userId = null, otherUserId = null, registered = false) {
     return new Promise((resolve, reject) => {
       if ((userId == null) || (otherUserId == null)) {
         throw new Error('A userId and otherUserId are required.');
@@ -78,14 +82,9 @@ class PhoneDB {
 
   /**
    * getContacts() returns a user's contacts.
-   * If mutual = true, returns a user's contacts who are already registered with PhoneDB.
+   * If registered = true limits contacts to those already registered with PhoneDB.
    */
-  getContacts(userId = null, mutuals = false) {
-
-  }
-
-  // find() finds a user's contacts who are also on the app
-  findUsers(userId) {
+  getContacts(userId = null, registered = false) {
     return new Promise((resolve, reject) => {
       const userContactsKey = `user:${userId}:contacts`;
       this.client.sinter(userContactsKey, APP_PHONE_SET_KEY, (err, res) => {
