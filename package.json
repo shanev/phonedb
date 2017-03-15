@@ -1,0 +1,8 @@
+{
+  "name": "phonedb",
+  "version": "0.1.0",
+  "description": "User contact list storage for Node",
+  "main": "phonedb.js",
+  "author": "Shane Vitarana <shanev@gmail.com>",
+  "license": "MIT"
+}
