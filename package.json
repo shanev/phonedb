@@ -5,6 +5,11 @@
   "main": "phonedb.js",
   "author": "Shane Vitarana <shanev@gmail.com>",
   "license": "MIT",
+  "homepage": "https://github.com/shanev/phonedb",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shanev/phonedb.git"
+  },
   "scripts": {
     "test": "istanbul cover node_modules/mocha/bin/_mocha && codecov"
   },
