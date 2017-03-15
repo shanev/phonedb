@@ -11,6 +11,8 @@ client.on('error', (err) => {
 const PhoneDB = require('../phonedb');
 
 describe('PhoneDB', () => {
+  const phoneDB = new PhoneDB();
+
   beforeEach(() => {
     client.flushdb();
   });
@@ -19,9 +21,9 @@ describe('PhoneDB', () => {
     client.flushdb();
   });
 
-  describe('#add()', () => {
-    it('should add a valid phone number', (done) => {
-      PhoneDB.add('+18475557777').then(() => {
+  describe('#register()', () => {
+    it('should register a valid phone number', (done) => {
+      phoneDB.register('+18475557777').then(() => {
         client.scard('users:phone', (err, res) => {
           assert.equal(1, res);
           done();
@@ -29,8 +31,8 @@ describe('PhoneDB', () => {
       });
     });
 
-    it('should not add an invalid phone number', (done) => {
-      PhoneDB.add('+1847555777').then(() => {
+    it('should not register an invalid phone number', (done) => {
+      phoneDB.register('+1847555777').then(() => {
         assert(false);
         done();
       }).catch(() => {
@@ -38,8 +40,8 @@ describe('PhoneDB', () => {
       });
     });
 
-    it('should not add another invalid phone number', (done) => {
-      PhoneDB.add('FAKE NEWS! SAD!').then(() => {
+    it('should not register another invalid phone number', (done) => {
+      phoneDB.register('FAKE NEWS! SAD!').then(() => {
         assert(false);
       }).catch((err) => {
         assert(err);
@@ -51,7 +53,7 @@ describe('PhoneDB', () => {
   describe('#addContacts()', () => {
     it('should add a list of valid contacts', (done) => {
       const contacts = ['+18475557777', '+14157775555'];
-      PhoneDB.addContacts('user1', contacts).then(() => {
+      phoneDB.addContacts('user1', contacts).then(() => {
         client.scard('user:user1:contacts', (_, res) => {
           assert.equal(2, res);
           done();
@@ -61,7 +63,7 @@ describe('PhoneDB', () => {
 
     it('should throw error if contact is not a number', (done) => {
       const contacts = ['FAKE NEWS! SAD!', '+14157775555'];
-      PhoneDB.addContacts('user1', contacts).then(() => {
+      phoneDB.addContacts('user1', contacts).then(() => {
         client.scard('user:user1:contacts', () => {
           assert(false);
         });
@@ -73,7 +75,7 @@ describe('PhoneDB', () => {
 
     it('should add one valid contact out of a total of 2', (done) => {
       const contacts = ['+1847555777', '+14157775555'];
-      PhoneDB.addContacts('user1', contacts).then(() => {
+      phoneDB.addContacts('user1', contacts).then(() => {
         client.scard('user:user1:contacts', (_, res) => {
           assert.equal(1, res);
           done();
@@ -84,10 +86,10 @@ describe('PhoneDB', () => {
 
   describe('#findUsers()', () => {
     it('should find 2 contacts on app', (done) => {
-      PhoneDB.add('+18475557777');
-      PhoneDB.add('+14157775555');
-      PhoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
-      PhoneDB.findUsers('user1').then((users) => {
+      phoneDB.register('+18475557777');
+      phoneDB.register('+14157775555');
+      phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
+      phoneDB.findUsers('user1').then((users) => {
         assert.equal(2, users.length);
         done();
       });
