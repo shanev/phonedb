@@ -72,15 +72,26 @@ class PhoneDB {
    * If registered = true limits contacts to those already registered with PhoneDB.
    */
   getMutualContacts(userId = null, otherUserId = null, registered = false) {
+    if ((userId == null) || (otherUserId == null)) {
+      throw new Error('A userId and otherUserId are required.');
+    }
+    const userKey = `user:${userId}:contacts`;
+    const otherUserKey = `user:${otherUserId}:contacts`;
+
+    if (registered == false) {
+      return new Promise((resolve, reject) => {
+        this.client.sinter(userKey, otherUserKey, (err, res) => {
+          if (err) { reject(err); }
+          debug(`[PhoneDB] Found ${res.length} mutual contacts between ${userId} and ${otherUserId}`);
+          resolve(res);
+        });
+      });      
+    }
+
     return new Promise((resolve, reject) => {
-      if ((userId == null) || (otherUserId == null)) {
-        throw new Error('A userId and otherUserId are required.');
-      }
-      const userKey = `user:${userId}:contacts`;
-      const otherUserKey = `user:${otherUserId}:contacts`;
-      this.client.sinter(userKey, otherUserKey, (err, res) => {
+      this.client.sinter(userKey, otherUserKey, APP_PHONE_SET_KEY, (err, res) => {
         if (err) { reject(err); }
-        debug(`[PhoneDB] Found ${res.length} mutual contacts between ${userId} and ${otherUserId}`);
+        debug(`[PhoneDB] Found ${res.length} mutual registered contacts between ${userId} and ${otherUserId}`);
         resolve(res);
       });
     });
