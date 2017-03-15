@@ -85,11 +85,21 @@ describe('PhoneDB', () => {
   });
 
   describe('.getContacts()', () => {
-    it('should find 2 contacts on app', (done) => {
+    it('should find 3 contacts on app', (done) => {
       phoneDB.register('+18475557777');
       phoneDB.register('+14157775555');
       phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
-      phoneDB.getContacts('user1').then((users) => {
+      phoneDB.getContacts('user1', false).then((users) => {
+        assert.equal(3, users.length);
+        done();
+      });
+    });
+
+    it('should find 2 registered contacts on app', (done) => {
+      phoneDB.register('+18475557777');
+      phoneDB.register('+14157775555');
+      phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
+      phoneDB.getContacts('user1', true).then((users) => {
         assert.equal(2, users.length);
         done();
       });

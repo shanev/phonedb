@@ -85,8 +85,19 @@ class PhoneDB {
    * If registered = true limits contacts to those already registered with PhoneDB.
    */
   getContacts(userId = null, registered = false) {
+    const userContactsKey = `user:${userId}:contacts`;
+
+    if (registered == false) {
+      return new Promise((resolve, reject) => {
+        this.client.smembers(userContactsKey, (err, res) => {
+          if (err) { reject(err); }
+          debug(`[PhoneDB] Found ${res.length} contacts for ${userId}`);
+          resolve(res);
+        });
+      }); 
+    }
+
     return new Promise((resolve, reject) => {
-      const userContactsKey = `user:${userId}:contacts`;
       this.client.sinter(userContactsKey, APP_PHONE_SET_KEY, (err, res) => {
         if (err) { reject(err); }
         debug(`[PhoneDB] Found ${res.length} of ${userId}'s contacts on app`);
