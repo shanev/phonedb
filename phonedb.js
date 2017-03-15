@@ -59,6 +59,21 @@ class PhoneStore {
     });
   }
 
+  static mutualContacts(userId = null, otherUserId = null) {
+    return new Promise((resolve, reject) => {
+      if ((userId == null) || (otherUserId == null)) {
+        throw new Error('A userId and otherUserId are required.');
+      }
+      const userKey = `user:${userId}:contacts`;
+      const otherUserKey = `user:${otherUserId}:contacts`;
+      client.sinter(userKey, otherUserKey, (err, res) => {
+        if (err) { reject(err); }
+        debug(`[PhoneDB] Found ${res.length} mutual contacts between ${userId} and ${otherUserId}`);
+        resolve(res);
+      });
+    });
+  }
+
   /**
    * getContacts() returns a user's contacts.
    * If mutual = true, returns a user's contacts who are already registered with PhoneDB.
@@ -71,8 +86,6 @@ class PhoneStore {
   static findUsers(userId) {
     return new Promise((resolve, reject) => {
       const userContactsKey = `user:${userId}:contacts`;
-      // client.smembers(userContactsKey, redis.print);
-      // client.smembers(APP_PHONE_SET_KEY, redis.print);
       client.sinter(userContactsKey, APP_PHONE_SET_KEY, (err, res) => {
         if (err) { reject(err); }
         debug(`[PhoneStore] Found ${res.length} of ${userId}'s contacts on app`);

@@ -39,7 +39,7 @@ Optionally pass in a [Redis configuration](https://github.com/NodeRedis/node_red
 const phoneDB = new PhoneDB(REDIS_CLOUD_URL);
 ```
 
-Register a user's phone number:
+Register a user's phone number with PhoneDB:
 ```js
 phoneDB.register('+14157775555');
 ```
@@ -54,9 +54,19 @@ Get a user's contacts:
 const contacts = await phoneDB.getContacts(userId);
 ```
 
-Get a user's contacts who are also registered with your app (set `registered = true`):
+Get a user's contacts who are also registered with PhoneDB (set `registered = true`):
 ```js
 const registeredContacts = await phoneDB.getContacts(userId, true);
+```
+
+Get mutual contacts between two users:
+```js
+const mutualContacts = await phoneDB.getMutualContacts(userId, otherUserId);
+```
+
+Get mutual contacts between two users who are registered:
+```js
+const mutualRegisteredContacts = await phoneDB.getMutualContacts(userId, otherUserId, true);
 ```
 
 ## Debugging
