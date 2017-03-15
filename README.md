@@ -1,5 +1,11 @@
 # PhoneDB
 
+[![npm version](https://badge.fury.io/js/phonedb.svg)](https://badge.fury.io/js/phonedb)
+[![Build Status](https://travis-ci.org/shanev/phonedb.svg?branch=master)](https://travis-ci.org/shanev/phonedb)
+[![codecov](https://codecov.io/gh/shanev/phonedb/branch/master/graph/badge.svg)](https://codecov.io/gh/shanev/phonedb)
+[![codebeat badge](https://codebeat.co/badges/00b7379b-9daf-43a3-80c2-7887b88ed66d)](https://codebeat.co/projects/github-com-shanev-phonedb-master)
+[![Dependencies](https://david-dm.org/shanev/phonedb.svg)](https://david-dm.org/shanev/phonedb)
+
 PhoneDB is a database backed by Redis to store user contact lists. It allows you to easily find which of a user's contacts are also registered with your app. PhoneDB validates phone numbers before they are added.
 
 ## Installation
