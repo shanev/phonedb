@@ -20,7 +20,10 @@ class PhoneDB {
     this.client = (config != null) ? redis.createClient(config) : redis.createClient();
   }
 
-  // register() adds a phone number to the app phone number set
+  /**
+   * register() adds a phone number to the app phone number set
+   * Returns an empty Promise.
+   */
   register(phone) {
     return new Promise((resolve, reject) => {
       if (phoneUtil.isValidNumber(phoneUtil.parse(phone)) === false) {
@@ -34,7 +37,10 @@ class PhoneDB {
     });
   }
 
-  // addContacts() stores a user's contact list
+  /**
+   * addContacts() stores a user's contact list
+   * Returns an empty Promise.
+   */
   addContacts(userId, contacts) {
     return new Promise((resolve, reject) => {
       if (userId == null) {
