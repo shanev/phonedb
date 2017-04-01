@@ -52,7 +52,8 @@ phoneDB.register('+14157775555');
 
 Add a user's contacts:
 ```js
-phoneDB.addContacts(userId, ['+18473335555', '+12127775555']);
+const result = await phoneDB.addContacts(userId, ['+18473335555', '+12127775555']);
+// 2
 ```
 
 Get a user's contacts:

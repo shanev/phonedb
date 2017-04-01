@@ -39,7 +39,7 @@ class PhoneDB {
 
   /**
    * addContacts() stores a user's contact list
-   * Returns an empty Promise.
+   * Returns a Promise with the number of contacts added.
    */
   addContacts(userId, contacts) {
     return new Promise((resolve, reject) => {
@@ -58,7 +58,7 @@ class PhoneDB {
         this.client.sadd(key, numbers, (err, res) => {
           if (err) { reject(err); }
           debug(`[PhoneDB] Added ${res} contacts to ${key}`);
-          resolve();
+          resolve(res);
         });
       } catch (err) {
         debug(`[PhoneDB] Caught ${err}. Rejecting Promise.`);

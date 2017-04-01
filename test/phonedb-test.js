@@ -53,11 +53,9 @@ describe('PhoneDB', () => {
   describe('.addContacts()', () => {
     it('should add a list of valid contacts', (done) => {
       const contacts = ['+18475557777', '+14157775555'];
-      phoneDB.addContacts('user1', contacts).then(() => {
-        client.scard('user:user1:contacts', (_, res) => {
-          assert.equal(2, res);
-          done();
-        });
+      phoneDB.addContacts('user1', contacts).then((res) => {
+        assert.equal(2, res);
+        done();
       });
     });
 
