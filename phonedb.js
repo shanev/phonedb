@@ -78,14 +78,14 @@ class PhoneDB {
     const userKey = `user:${userId}:contacts`;
     const otherUserKey = `user:${otherUserId}:contacts`;
 
-    if (registered == false) {
+    if (registered === false) {
       return new Promise((resolve, reject) => {
         this.client.sinter(userKey, otherUserKey, (err, res) => {
           if (err) { reject(err); }
           debug(`[PhoneDB] Found ${res.length} mutual contacts between ${userId} and ${otherUserId}`);
           resolve(res);
         });
-      });      
+      });
     }
 
     return new Promise((resolve, reject) => {
@@ -104,14 +104,14 @@ class PhoneDB {
   getContacts(userId = null, registered = false) {
     const userContactsKey = `user:${userId}:contacts`;
 
-    if (registered == false) {
+    if (registered === false) {
       return new Promise((resolve, reject) => {
         this.client.smembers(userContactsKey, (err, res) => {
           if (err) { reject(err); }
           debug(`[PhoneDB] Found ${res.length} contacts for ${userId}`);
           resolve(res);
         });
-      }); 
+      });
     }
 
     return new Promise((resolve, reject) => {
