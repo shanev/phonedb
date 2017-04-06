@@ -24,7 +24,7 @@ describe('PhoneDB', () => {
   describe('.register()', () => {
     it('should register a valid phone number', (done) => {
       phoneDB.register('+18475557777').then(() => {
-        client.scard('users:phone', (err, res) => {
+        client.scard('phonedb:registered', (err, res) => {
           assert.equal(1, res);
           done();
         });

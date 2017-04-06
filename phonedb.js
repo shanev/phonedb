@@ -9,7 +9,7 @@ const redis = require('redis');
 
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
-const APP_PHONE_SET_KEY = 'users:phone';
+const REGISTERED_KEY = 'phonedb:registered';
 
 class PhoneDB {
   /**
@@ -29,9 +29,9 @@ class PhoneDB {
       if (phoneUtil.isValidNumber(phoneUtil.parse(phone)) === false) {
         throw new Error(`Invalid phone number: ${phone}`);
       }
-      this.client.sadd(APP_PHONE_SET_KEY, phone, (err) => {
+      this.client.sadd(REGISTERED_KEY, phone, (err) => {
         if (err) { reject(err); }
-        debug(`[PhoneDB] Added ${phone} to ${APP_PHONE_SET_KEY}`);
+        debug(`[PhoneDB] Added ${phone} to ${REGISTERED_KEY}`);
         resolve();
       });
     });
@@ -89,7 +89,7 @@ class PhoneDB {
     }
 
     return new Promise((resolve, reject) => {
-      this.client.sinter(userKey, otherUserKey, APP_PHONE_SET_KEY, (err, res) => {
+      this.client.sinter(userKey, otherUserKey, REGISTERED_KEY, (err, res) => {
         if (err) { reject(err); }
         debug(`[PhoneDB] Found ${res.length} mutual registered contacts between ${userId} and ${otherUserId}`);
         resolve(res);
@@ -115,7 +115,7 @@ class PhoneDB {
     }
 
     return new Promise((resolve, reject) => {
-      this.client.sinter(userContactsKey, APP_PHONE_SET_KEY, (err, res) => {
+      this.client.sinter(userContactsKey, REGISTERED_KEY, (err, res) => {
         if (err) { reject(err); }
         debug(`[PhoneDB] Found ${res.length} of ${userId}'s contacts on app`);
         resolve(res);
