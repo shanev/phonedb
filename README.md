@@ -35,14 +35,9 @@ Require PhoneDB:
 const PhoneDB = require('phonedb');
 ```
 
-Initialize PhoneDB, connecting to a local Redis server running on the default port:
+Initialize PhoneDB, connecting to a [Redis client](https://github.com/NodeRedis):
 ```js
-const phoneDB = new PhoneDB();
-```
-
-Optionally pass in a [Redis configuration](https://github.com/NodeRedis/node_redis#rediscreateclient) to connect to a remote server.
-```js
-const phoneDB = new PhoneDB(REDIS_CLOUD_URL);
+const phoneDB = new PhoneDB(redisClient);
 ```
 
 Register a user's phone number with PhoneDB:
