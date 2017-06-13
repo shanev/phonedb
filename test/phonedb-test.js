@@ -1,5 +1,4 @@
 const assert = require('assert');
-
 const redis = require('redis');
 
 const client = redis.createClient();
@@ -11,7 +10,7 @@ client.on('error', (err) => {
 const PhoneDB = require('../phonedb');
 
 describe('PhoneDB', () => {
-  const phoneDB = new PhoneDB();
+  const phoneDB = new PhoneDB(client);
 
   beforeEach(() => {
     client.flushdb();

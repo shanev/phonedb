@@ -1,6 +1,6 @@
 {
   "name": "phonedb",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Contact list storage and management for Node",
   "keywords": [
     "redis",

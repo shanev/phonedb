@@ -4,20 +4,16 @@
  * to find mutual contacts, and contacts who are registered with PhoneDB.
  */
 const debug = require('debug')('phonedb');
-
-const redis = require('redis');
-
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
 const REGISTERED_KEY = 'phonedb:registered';
 
 class PhoneDB {
   /**
-   * Initializes a new PhoneDB object.
-   * Optionally takes in a Redis config (https://github.com/NodeRedis/node_redis#rediscreateclient).
+   * Initializes a new PhoneDB object with a Redis client (https://github.com/NodeRedis/node_redis).
    */
-  constructor(config = null) {
-    this.client = (config != null) ? redis.createClient(config) : redis.createClient();
+  constructor(redis) {
+    this.client = redis;
   }
 
   /**
