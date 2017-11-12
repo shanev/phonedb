@@ -18,19 +18,20 @@
   "scripts": {
     "redis-start": "redis-server /usr/local/etc/redis.conf &",
     "redis-stop": "redis-cli shutdown",
-    "test": "istanbul cover node_modules/mocha/bin/_mocha && codecov"
+    "test": "nyc mocha",
+    "coverage": "nyc report --reporter=text-lcov > coverage/coverage.lcov && ./node_modules/.bin/codecov"
   },
   "dependencies": {
-    "debug": "^2.6.3",
-    "google-libphonenumber": "^2.0.11",
-    "redis": "^2.7.1"
+    "debug": "^3.1.0",
+    "google-libphonenumber": "^3.0.8",
+    "redis": "^2.8.0"
   },
   "devDependencies": {
-    "codecov": "^2.0.1",
-    "eslint": "^3.17.1",
-    "eslint-config-airbnb-base": "^11.1.1",
-    "eslint-plugin-import": "^2.2.0",
-    "istanbul": "^0.4.5",
-    "mocha": "^3.2.0"
+    "codecov": "^2.3.1",
+    "eslint": "^4.11.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "mocha": "^4.0.1",
+    "nyc": "*"
   }
 }
