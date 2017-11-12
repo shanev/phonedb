@@ -63,55 +63,50 @@ describe('PhoneDB', () => {
       }
     });
 
-  //   it('should add one valid contact out of a total of 2', (done) => {
-  //     const contacts = ['+1847555777', '+14157775555'];
-  //     phoneDB.addContacts('user1', contacts).then(() => {
-  //       client.scard('user:user1:contacts', (_, res) => {
-  //         assert.equal(1, res);
-  //         done();
-  //       });
-  //     });
-  //   });
+    it('should add one valid contact out of a total of 2', async () => {
+      const contacts = ['+1847555777', '+14157775555'];
+      await phoneDB.addContacts('user1', contacts);
+      const result = client.scard('user:user1:contacts');
+      assert.equal(1, result);
+    });
   });
 
-  // describe('.getMutualContacts()', () => {
-  //   it('should find mutual contacts between two users', (done) => {
-  //     phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
-  //     phoneDB.addContacts('user2', ['+18475557777', '+14157775555', '+14157775556']);
-  //     phoneDB.getMutualContacts('user1', 'user2').then((contacts) => {
-  //       assert.equal(3, contacts.length);
-  //       done();
-  //     });
-  //   });
+  describe('.getMutualContacts()', () => {
+    it('should find mutual contacts between two users', (done) => {
+      phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
+      phoneDB.addContacts('user2', ['+18475557777', '+14157775555', '+14157775556']);
+      phoneDB.getMutualContacts('user1', 'user2').then((contacts) => {
+        assert.equal(3, contacts.length);
+        done();
+      });
+    });
 
-  //   it('should find mutual registered contacts between two users', (done) => {
-  //     phoneDB.register('+18475557777');
-  //     phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
-  //     phoneDB.addContacts('user2', ['+18475557777', '+14157775555', '+14157775556']);
-  //     phoneDB.getMutualContacts('user1', 'user2', true).then((contacts) => {
-  //       assert.equal(1, contacts.length);
-  //       done();
-  //     });
-  //   });
-  // });
+    it('should find mutual registered contacts between two users', (done) => {
+      phoneDB.register('+18475557777');
+      phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
+      phoneDB.addContacts('user2', ['+18475557777', '+14157775555', '+14157775556']);
+      phoneDB.getMutualContacts('user1', 'user2', true).then((contacts) => {
+        assert.equal(1, contacts.length);
+        done();
+      });
+    });
+  });
 
-  // describe('.getContacts()', () => {
-  //   it('should find 3 contacts for a user', (done) => {
-  //     phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
-  //     phoneDB.getContacts('user1', false).then((users) => {
-  //       assert.equal(3, users.length);
-  //       done();
-  //     });
-  //   });
+  describe('.getContacts()', () => {
+    it('should find 3 contacts for a user', async () => {
+      await phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
+      const result = await phoneDB.getContacts('user1');
+      assert.equal(3, result.length);
+    });
 
-  //   it('should find 2 registered contacts for a user', (done) => {
-  //     phoneDB.register('+18475557777');
-  //     phoneDB.register('+14157775555');
-  //     phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
-  //     phoneDB.getContacts('user1', true).then((users) => {
-  //       assert.equal(2, users.length);
-  //       done();
-  //     });
-  //   });
-  // });
+    it('should find 2 registered contacts for a user', (done) => {
+      phoneDB.register('+18475557777');
+      phoneDB.register('+14157775555');
+      phoneDB.addContacts('user1', ['+18475557777', '+14157775555', '+14157775556']);
+      phoneDB.getContacts('user1', true).then((users) => {
+        assert.equal(2, users.length);
+        done();
+      });
+    });
+  });
 });

@@ -16,6 +16,8 @@ class PhoneDB {
   constructor(redis) {
     this.client = redis;
     this.sadd = promisify(redis.sadd).bind(redis);
+    this.sinter = promisify(redis.sinter).bind(redis);
+    this.smembers = promisify(redis.smembers).bind(redis);
   }
 
   /**
@@ -41,8 +43,7 @@ class PhoneDB {
       throw new Error('A userId is required.');
     }
     // filter out invalid numbers
-    const numbers = contacts.filter(
-      contact => phoneUtil.isValidNumber(phoneUtil.parse(contact)));
+    const numbers = contacts.filter(contact => phoneUtil.isValidNumber(phoneUtil.parse(contact)));
 
     // add filtered numbers to Redis
     return this.sadd(`user:${userId}:contacts`, numbers);
@@ -52,7 +53,7 @@ class PhoneDB {
    * mutualContacts() returns contacts `userId` and `otherUserId` have in common.
    * If registered = true limits contacts to those already registered with PhoneDB.
    */
-  getMutualContacts(userId = null, otherUserId = null, registered = false) {
+  async getMutualContacts(userId = null, otherUserId = null, registered = false) {
     if ((userId == null) || (otherUserId == null)) {
       throw new Error('A userId and otherUserId are required.');
     }
@@ -60,48 +61,32 @@ class PhoneDB {
     const otherUserKey = `user:${otherUserId}:contacts`;
 
     if (registered === false) {
-      return new Promise((resolve, reject) => {
-        this.client.sinter(userKey, otherUserKey, (err, res) => {
-          if (err) { reject(err); }
-          debug(`[PhoneDB] Found ${res.length} mutual contacts between ${userId} and ${otherUserId}`);
-          resolve(res);
-        });
-      });
+      const result = await this.sinter(userKey, otherUserKey);
+      debug(`[PhoneDB] Found ${result.length} mutual contacts between ${userId} and ${otherUserId}`);
+      return result;
     }
 
-    return new Promise((resolve, reject) => {
-      this.client.sinter(userKey, otherUserKey, REGISTERED_KEY, (err, res) => {
-        if (err) { reject(err); }
-        debug(`[PhoneDB] Found ${res.length} mutual registered contacts between ${userId} and ${otherUserId}`);
-        resolve(res);
-      });
-    });
+    const result = this.sinter(userKey, otherUserKey, REGISTERED_KEY);
+    debug(`[PhoneDB] Found ${result.length} mutual registered contacts between ${userId} and ${otherUserId}`);
+    return result;
   }
 
   /**
    * getContacts() returns a user's contacts.
    * If registered = true limits contacts to those already registered with PhoneDB.
    */
-  getContacts(userId = null, registered = false) {
+  async getContacts(userId = null, registered = false) {
     const userContactsKey = `user:${userId}:contacts`;
 
     if (registered === false) {
-      return new Promise((resolve, reject) => {
-        this.client.smembers(userContactsKey, (err, res) => {
-          if (err) { reject(err); }
-          debug(`[PhoneDB] Found ${res.length} contacts for ${userId}`);
-          resolve(res);
-        });
-      });
+      const result = await this.smembers(userContactsKey);
+      debug(`[PhoneDB] Found ${result.length} contacts for ${userId}`);
+      return result;
     }
 
-    return new Promise((resolve, reject) => {
-      this.client.sinter(userContactsKey, REGISTERED_KEY, (err, res) => {
-        if (err) { reject(err); }
-        debug(`[PhoneDB] Found ${res.length} of ${userId}'s contacts on app`);
-        resolve(res);
-      });
-    });
+    const result = await this.sinter(userContactsKey, REGISTERED_KEY);
+    debug(`[PhoneDB] Found ${result.length} of ${userId}'s contacts on app`);
+    return result;
   }
 }
 
