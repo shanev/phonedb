@@ -20,6 +20,8 @@ describe('PhoneDB', () => {
 
   after(() => {
     client.flushdb();
+    // workaround for `nyc mocha` hanging
+    process.exit(0);
   });
 
   describe('.register()', () => {
