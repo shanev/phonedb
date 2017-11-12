@@ -5,6 +5,7 @@
  */
 const debug = require('debug')('phonedb');
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
+const { promisify } = require('util');
 
 const REGISTERED_KEY = 'phonedb:registered';
 
@@ -14,53 +15,37 @@ class PhoneDB {
    */
   constructor(redis) {
     this.client = redis;
+    this.sadd = promisify(redis.sadd).bind(redis);
   }
 
   /**
-   * register() adds a phone number to the app phone number set
+   * register() adds a phone number to the app phone number set.
+   * Throws an error for an invalid number.
    * Returns an empty Promise.
    */
   register(phone) {
-    return new Promise((resolve, reject) => {
-      if (phoneUtil.isValidNumber(phoneUtil.parse(phone)) === false) {
-        throw new Error(`Invalid phone number: ${phone}`);
-      }
-      this.client.sadd(REGISTERED_KEY, phone, (err) => {
-        if (err) { reject(err); }
-        debug(`[PhoneDB] Added ${phone} to ${REGISTERED_KEY}`);
-        resolve();
-      });
-    });
+    if (phoneUtil.isValidNumber(phoneUtil.parse(phone)) === false) {
+      throw new Error(`Invalid phone number: ${phone}`);
+    }
+
+    return this.sadd(REGISTERED_KEY, phone);
   }
 
   /**
-   * addContacts() stores a user's contact list
+   * addContacts() stores a user's contact list.
+   * Throws an error for an invalid number.
    * Returns a Promise with the number of contacts added.
    */
   addContacts(userId, contacts) {
-    return new Promise((resolve, reject) => {
-      if (userId == null) {
-        reject(new Error('A userId is required.'));
-      }
-      try {
-        // filter out invalid numbers
-        const numbers = contacts.filter(
-          contact => phoneUtil.isValidNumber(phoneUtil.parse(contact)));
+    if (userId == null) {
+      throw new Error('A userId is required.');
+    }
+    // filter out invalid numbers
+    const numbers = contacts.filter(
+      contact => phoneUtil.isValidNumber(phoneUtil.parse(contact)));
 
-        // create key for user
-        const key = `user:${userId}:contacts`;
-
-        // add filtered numbers to Redis
-        this.client.sadd(key, numbers, (err, res) => {
-          if (err) { reject(err); }
-          debug(`[PhoneDB] Added ${res} contacts to ${key}`);
-          resolve(res);
-        });
-      } catch (err) {
-        debug(`[PhoneDB] Caught ${err}. Rejecting Promise.`);
-        reject(err);
-      }
-    });
+    // add filtered numbers to Redis
+    return this.sadd(`user:${userId}:contacts`, numbers);
   }
 
   /**
