@@ -10,23 +10,19 @@ PhoneDB is a database backed by Redis to store user contact lists. It allows you
 
 ## Installation
 
-If you are using yarn:
-
 ```sh
-yarn add phonedb
+npm install phonedb
 ```
 
-or npm:
+### Run Redis server
+
+Check out [Redis quickstart](https://redis.io/topics/quickstart) to install for your platform, or use one of the many cloud providers.
+
+A convenience script is provided for macOS default Homebrew Redis installs:
 
 ```sh
-npm install phonedb --save
+npm run redis-start
 ```
-
-Run Redis server:
-```sh
-redis-server
-```
-Check out [Redis quickstart](https://redis.io/topics/quickstart) to install.
 
 ## Usage
 
@@ -82,10 +78,7 @@ DEBUG=phonedb node server.js
 ## Tests
 
 ```sh
-yarn install # or npm install
+npm install
 npm test
+npm run coverage
 ```
-
-## Author
-
-Shane Vitarana :: [http://shanev.me](http://shanev.me) :: [@shanev](https://twitter.com/shanev)
